@@ -47,10 +47,6 @@ build/
 # macOS
 *.DS_Store
 
-# Windows
-Thumbs.db
-ehthumbs.db
-
 # IDEs
 .vscode/
 .idea/

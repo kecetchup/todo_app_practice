@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -99,5 +100,17 @@ public class LoginController {
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public void deleteTodo(@PathVariable Long id) {
         todoService.deleteTodo(id);
+    }
+    @PutMapping("/todos/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public Todo updateTodo(@PathVariable Long id, @RequestBody TodoRequestDTO todoRequestDTO, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Todo existingTodo = todoService.getTodoById(id); // ID로 기존 Todo 가져오기
+
+        if (existingTodo == null || !existingTodo.getUser().equals(userDetails.getUser())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo 항목을 찾을 수 없습니다.");
+        }
+
+        existingTodo.setContent(todoRequestDTO.getTodo()); // 내용 수정
+        return todoService.updateTodo(existingTodo); // 업데이트된 Todo 반환
     }
 }

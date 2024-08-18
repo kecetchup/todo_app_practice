@@ -1,13 +1,12 @@
-import React from "react";
-
-
-const Header = () => {
-    return (
-        <div className="Header">
-            <h1>{new Date().toDateString()}</h1>
-            
-        </div>
-            
-    );
+import React from 'react';
+import './header.css'
+const Header = ({ data }) => {
+  return (
+    <header>
+      <h1>Welcome to Home Page</h1>
+      {data ? <p>{data}</p> : <p>Loading...</p>}
+    </header>
+  );
 };
-export default React.memo(Header);
+
+export default Header;

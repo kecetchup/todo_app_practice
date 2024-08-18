@@ -1,4 +1,6 @@
-FROM ubuntu:latest
-LABEL authors="yeonchanho"
+FROM openjdk:11-jre-slim
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /app
+COPY target/myapp.jar /usr/local/lib/myapp.jar
+
+ENTRYPOINT ["java", "-jar", "/usr/local/lib/myapp.jar"]

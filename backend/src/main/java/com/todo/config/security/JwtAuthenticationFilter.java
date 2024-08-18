@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+// 클라이언트로 부터 받은 데이터
 public class JwtAuthenticationFilter extends OncePerRequestFilter { // 매 요청마다 한 번만 실행되는 필터를 정의
 
     private final JwtTokenProvider jwtTokenProvider; // JWT의 생성 및 검증을 담당하는 JwtTokenProvider 객체
@@ -27,11 +28,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // 매 요�
 
         if (token != null && jwtTokenProvider.validateToken(token)) { // 추출한 토큰이 유효한지 검증
             String username = jwtTokenProvider.getUsernameFromToken(token); // 유효시 JWT에서 사용자 이름을 추출
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username); // 사용자 정보를 로드
-            String role = jwtTokenProvider.getRoleFromToken(token); // JWT에서 역할을 추출
+
+            // UserDetailsService를 사용하여 사용자 정보를 로드
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            // CustomUserDetails로 변환
+            CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+
+            // JWT에서 역할을 추출
+            String role = jwtTokenProvider.getRoleFromToken(token);
 
             // JwtAuthenticationToken 객체 생성
-            JwtAuthenticationToken authentication = new JwtAuthenticationToken(userDetails, token, role, userDetails.getAuthorities());
+            JwtAuthenticationToken authentication = new JwtAuthenticationToken(customUserDetails, token, role, customUserDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication); // 요청에서 인증된 사용자로 인식
         }
 

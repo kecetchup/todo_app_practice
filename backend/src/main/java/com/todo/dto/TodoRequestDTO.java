@@ -1,2 +1,8 @@
-package com.todo.dto;public class TodoRequestDTO {
+package com.todo.dto;
+
+import lombok.Data;
+
+@Data
+public class TodoRequestDTO {
+    private String todo;
 }

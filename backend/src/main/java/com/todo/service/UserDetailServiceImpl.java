@@ -1,5 +1,6 @@
 package com.todo.service;
 
+import com.todo.config.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -7,13 +8,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.todo.domain.User; // User 모델 클래스
-import com.todo.repository.UserRepository; // UserRepository 인터페이스
-import com.todo.repository.RoleRepository; // RoleRepository 인터페이스
+import com.todo.domain.User;
+import com.todo.repository.UserRepository;
+import com.todo.repository.RoleRepository;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
@@ -21,14 +23,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private static final int MAX_ATTEMPTS = 5; // 최대 시도 횟수
     private static final long LOCK_TIME = 15 * 60 * 1000; // 15분
 
-    private Map<String, Integer> attemptCounts = new HashMap<>(); // 사용자 시도 횟수 저장
-    private Map<String, Long> lockTime = new HashMap<>(); // 사용자 잠금 시간 저장
+    private Map<String, Integer> attemptCounts = new ConcurrentHashMap<>(); // 사용자 시도 횟수 저장
+    private Map<String, Long> lockTime = new ConcurrentHashMap<>(); // 사용자 잠금 시간 저장
 
     @Autowired
-    private UserRepository userRepository; // 사용자 저장소 주입
+    private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository; // 역할 저장소 주입
+    private RoleRepository roleRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -38,21 +40,26 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
 
         // 사용자 정보를 DB에서 조회하는 로직
-        User user = userRepository.findByUsername(username); // 사용자 조회
+        User user = userRepository.findByUsername(username);
         if (user != null) {
             // 로그인 성공 시 시도 횟수 리셋
             resetAttemptCount(username);
             List<GrantedAuthority> authorities = new ArrayList<>();
 
             // 사용자 역할 가져오기
-            user.getRoles().forEach(role -> {
-                authorities.add(new SimpleGrantedAuthority(role.getName()));
-            });
+            if (user.getRoles() != null) {
+                user.getRoles().forEach(role -> {
+                    authorities.add(new SimpleGrantedAuthority(role.getName()));
+                });
+            }
 
-            return new org.springframework.security.core.userdetails.User(
+            // CustomUserDetails 객체 생성하여 반환
+            return new CustomUserDetails(
+                    user.getId(),
                     user.getUsername(),
                     user.getPassword(),
-                    authorities
+                    authorities,
+                    user // User 객체 추가
             );
         } else {
             // 로그인 실패 시 시도 횟수 증가

@@ -32,6 +32,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'//롬복
 	implementation 'org.springframework.boot:spring-boot-starter-security' //보안 기능을 추가
 	implementation 'de.codecentric:spring-boot-admin-starter-server:3.1.0' //Spring Boot 애플리케이션 모니터링
+	implementation 'de.codecentric:spring-boot-admin-starter-client:3.1.0'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.1' //토큰 생성
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.1' //
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.1'

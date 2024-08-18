@@ -20,8 +20,9 @@ public class JwtTokenProvider {
     private long expirationTime;
 
     // JWT 생성
-    public String createToken(String username) {
+    public String createToken(String username, String role) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
@@ -50,5 +51,9 @@ public class JwtTokenProvider {
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         return claims.getSubject();
+    }
+    public String getRoleFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        return (String) claims.get("role"); // 역할 정보 가져오기
     }
 }

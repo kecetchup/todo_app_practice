@@ -36,5 +36,10 @@ out/
 ### VS Code ###
 .vscode/
 
+### env 파일 ###
 db.env
 JWT.env
+admin.env
+### 로그 파일 ###
+app.log.*
+*.gz

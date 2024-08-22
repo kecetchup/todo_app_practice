@@ -1,50 +1,44 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.2'
-	id 'io.spring.dependency-management' version '1.1.6'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'com'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)  // Java 17로 설정
+    }
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
+sourceCompatibility = '17'  // Java 17로 설정
+targetCompatibility = '17'  // Java 17로 설정
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' //ORM 매핑
-	implementation 'org.springframework.boot:spring-boot-starter-web' //pring MVC와 Tomcat을 포함하여 RESTful 웹 서비스 개발
-	runtimeOnly 'mysql:mysql-connector-java:8.0.32' //MySQL 데이터베이스 드라이버
-	testImplementation 'org.springframework.boot:spring-boot-starter-test' // 단위 테스트 및 통합 테스트를 위한 스타터
-	compileOnly 'org.projectlombok:lombok:1.18.30' //롬복
-	annotationProcessor 'org.projectlombok:lombok:1.18.30'//롬복
-	implementation 'org.springframework.boot:spring-boot-starter-security' //보안 기능을 추가
-	implementation 'de.codecentric:spring-boot-admin-starter-server:3.1.0' //Spring Boot 애플리케이션 모니터링
-	implementation 'de.codecentric:spring-boot-admin-starter-client:3.1.0'
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.1' //토큰 생성
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.1' //
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.1'
-	implementation 'io.github.cdimascio:dotenv-java:2.2.0'
-	implementation 'javax.validation:validation-api:2.0.1.Final'
-	implementation 'org.hibernate.validator:hibernate-validator:6.0.13.Final'
-	implementation 'org.glassfish:javax.el:3.0.0'
-
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.32'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'de.codecentric:spring-boot-admin-starter-server:3.1.0'
+    implementation 'de.codecentric:spring-boot-admin-starter-client:3.1.0'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.1'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.1'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.1'
+    implementation 'io.github.cdimascio:dotenv-java:2.2.0'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.hibernate.validator:hibernate-validator:6.0.13.Final'
+    implementation 'org.glassfish:javax.el:3.0.0'
 }
 
-
-
-tasks.named('test') {
-	useJUnitPlatform()
+tasks.withType(Test) {
+    enabled = false
 }

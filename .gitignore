@@ -54,13 +54,7 @@ build/
 *.zip
 *.tar
 
-# Kubernetes
-*.kube/
-*.yaml
 
-# Helm
-charts/
-*.tgz
 
 # 기타
 *.swp
@@ -74,5 +68,3 @@ charts/
 *.coverage
 *.pytest_cache
 *.envrc
-
-.env
